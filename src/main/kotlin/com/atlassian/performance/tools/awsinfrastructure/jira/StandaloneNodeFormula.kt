@@ -5,6 +5,7 @@ import com.atlassian.performance.tools.awsinfrastructure.AwsCli
 import com.atlassian.performance.tools.awsinfrastructure.api.hardware.Computer
 import com.atlassian.performance.tools.concurrency.api.submitWithLogContext
 import com.atlassian.performance.tools.infrastructure.api.Sed
+import com.atlassian.performance.tools.infrastructure.api.database.DbType
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraGcLog
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraHomeSource
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraNodeConfig
@@ -29,7 +30,8 @@ internal class StandaloneNodeFormula(
     private val productDistribution: ProductDistribution,
     private val ssh: Ssh,
     private val config: JiraNodeConfig,
-    private val computer: Computer
+    private val computer: Computer,
+    private val dbType: DbType = DbType.MySql
 ) : NodeFormula {
     private val logger: Logger = LogManager.getLogger(this::class.java)
     private val jdk = config.jdk
@@ -155,3 +157,4 @@ private class StaticBackoff(
 ) : Backoff {
     override fun backOff(attempt: Int): Duration = backOff
 }
+

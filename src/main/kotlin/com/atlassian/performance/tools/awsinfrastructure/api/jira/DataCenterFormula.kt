@@ -205,7 +205,8 @@ class DataCenterFormula private constructor(
                             productDistribution = productDistribution,
                             ssh = ssh,
                             config = configs[i],
-                            computer = computer
+                            computer = computer,
+                            dbType = database.getDbType()
                         ),
                         nodeIndex = i,
                         sharedHome = sharedHome
