@@ -173,7 +173,8 @@ class StandaloneFormula private constructor(
             databaseIp = databaseIp,
             productDistribution = productDistribution,
             ssh = ssh,
-            computer = computer
+            computer = computer,
+            dbType = database.getDbType()
         )
 
         uploadPlugins.get()

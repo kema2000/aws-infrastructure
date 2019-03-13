@@ -2,11 +2,14 @@ package com.atlassian.performance.tools.awsinfrastructure.api
 
 import com.atlassian.performance.tools.aws.api.StorageLocation
 import com.atlassian.performance.tools.awsinfrastructure.S3DatasetPackage
+import com.atlassian.performance.tools.infrastructure.api.database.DbType
 import com.atlassian.performance.tools.infrastructure.api.database.MySqlDatabase
+import com.atlassian.performance.tools.infrastructure.api.database.PostgresDatabase
 import com.atlassian.performance.tools.infrastructure.api.dataset.Dataset
 import com.atlassian.performance.tools.infrastructure.api.dataset.FileArchiver
 import com.atlassian.performance.tools.infrastructure.api.dataset.HttpDatasetPackage
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraHomePackage
+import java.lang.Exception
 import java.net.URI
 import java.time.Duration
 import java.time.Duration.ofMinutes
@@ -22,13 +25,13 @@ class DatasetCatalogue {
             label = "2M issues, format 7",
             database = MySqlDatabase(
                 HttpDatasetPackage(
-                    uri = bucketUri.resolve("dataset-d4684761-116b-49ae-9cce-e45cecdcae2a/database.tar.bz2"),
+                    downloadPath = bucketUri.resolve("dataset-d4684761-116b-49ae-9cce-e45cecdcae2a/database.tar.bz2").toString(),
                     downloadTimeout = ofMinutes(17)
                 )
             ),
             jiraHomeSource = JiraHomePackage(
                 HttpDatasetPackage(
-                    uri = bucketUri.resolve("dataset-d4684761-116b-49ae-9cce-e45cecdcae2a/jirahome.tar.bz2"),
+                    downloadPath = bucketUri.resolve("dataset-d4684761-116b-49ae-9cce-e45cecdcae2a/jirahome.tar.bz2").toString(),
                     downloadTimeout = ofMinutes(21)
                 )
             )
@@ -41,13 +44,13 @@ class DatasetCatalogue {
             label = "2M issues, format 8",
             database = MySqlDatabase(
                 HttpDatasetPackage(
-                    uri = bucketUri.resolve("dataset-631c70d4-084b-455c-9785-b01068b9f07c/database.tar.bz2"),
+                    downloadPath = bucketUri.resolve("dataset-631c70d4git -084b-455c-9785-b01068b9f07c/database.tar.bz2").toString(),
                     downloadTimeout = ofMinutes(17)
                 )
             ),
             jiraHomeSource = JiraHomePackage(
                 HttpDatasetPackage(
-                    uri = bucketUri.resolve("dataset-631c70d4-084b-455c-9785-b01068b9f07c/jirahome.tar.bz2"),
+                    downloadPath = bucketUri.resolve("dataset-631c70d4-084b-455c-9785-b01068b9f07c/jirahome.tar.bz2").toString(),
                     downloadTimeout = ofMinutes(21)
                 )
             )
@@ -58,27 +61,50 @@ class DatasetCatalogue {
         location: StorageLocation,
         label: String = "custom",
         databaseDownload: Duration = ofMinutes(10),
-        jiraHomeDownload: Duration = ofMinutes(10)
+        jiraHomeDownload: Duration = ofMinutes(10),
+        dbType : DbType = DbType.MySql
     ): Dataset {
         val archiver = FileArchiver()
-        return Dataset(
-            label = label,
-            database = MySqlDatabase(
-                S3DatasetPackage(
-                    artifactName = archiver.zippedName(CustomDatasetSource.FileNames.DATABASE),
-                    location = location,
-                    unpackedPath = CustomDatasetSource.FileNames.DATABASE,
-                    downloadTimeout = databaseDownload
-                )
-            ),
-            jiraHomeSource = JiraHomePackage(
-                S3DatasetPackage(
-                    artifactName = archiver.zippedName(CustomDatasetSource.FileNames.JIRAHOME),
-                    location = location,
-                    unpackedPath = CustomDatasetSource.FileNames.JIRAHOME,
-                    downloadTimeout = jiraHomeDownload
+        when (dbType) {
+            DbType.Postgres -> return Dataset(
+                label = label,
+                database = PostgresDatabase(
+                    S3DatasetPackage(
+                        artifactName = archiver.zippedName(CustomDatasetSource.FileNames.DATABASE),
+                        location = location,
+                        unpackedPath = CustomDatasetSource.FileNames.DATABASE,
+                        downloadTimeout = databaseDownload
+                    )
+                ),
+                jiraHomeSource = JiraHomePackage(
+                    S3DatasetPackage(
+                        artifactName = archiver.zippedName(CustomDatasetSource.FileNames.JIRAHOME),
+                        location = location,
+                        unpackedPath = CustomDatasetSource.FileNames.JIRAHOME,
+                        downloadTimeout = jiraHomeDownload
+                    )
                 )
             )
-        )
+            DbType.MySql -> return Dataset(
+                label = label,
+                database = MySqlDatabase(
+                    S3DatasetPackage(
+                        artifactName = archiver.zippedName(CustomDatasetSource.FileNames.DATABASE),
+                        location = location,
+                        unpackedPath = CustomDatasetSource.FileNames.DATABASE,
+                        downloadTimeout = databaseDownload
+                    )
+                ),
+                jiraHomeSource = JiraHomePackage(
+                    S3DatasetPackage(
+                        artifactName = archiver.zippedName(CustomDatasetSource.FileNames.JIRAHOME),
+                        location = location,
+                        unpackedPath = CustomDatasetSource.FileNames.JIRAHOME,
+                        downloadTimeout = jiraHomeDownload
+                    )
+                )
+            )
+            else -> throw Exception("DB $dbType not supported")
+        }
     }
 }

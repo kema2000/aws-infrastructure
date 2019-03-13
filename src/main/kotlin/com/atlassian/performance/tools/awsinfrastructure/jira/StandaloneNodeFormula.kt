@@ -4,6 +4,7 @@ import com.atlassian.performance.tools.aws.api.Storage
 import com.atlassian.performance.tools.awsinfrastructure.AwsCli
 import com.atlassian.performance.tools.awsinfrastructure.api.hardware.Computer
 import com.atlassian.performance.tools.infrastructure.api.Sed
+import com.atlassian.performance.tools.infrastructure.api.database.DbType
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraGcLog
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraHomeSource
 import com.atlassian.performance.tools.infrastructure.api.jira.JiraNodeConfig
@@ -27,7 +28,8 @@ internal class StandaloneNodeFormula(
     private val productDistribution: ProductDistribution,
     private val ssh: Ssh,
     private val config: JiraNodeConfig,
-    private val computer: Computer
+    private val computer: Computer,
+    private val dbType: DbType = DbType.MySql
 ) : NodeFormula {
     private val logger: Logger = LogManager.getLogger(this::class.java)
     private val jdk = config.jdk
@@ -53,12 +55,15 @@ internal class StandaloneNodeFormula(
             )
             connection.execute("echo jira.home=`realpath $jiraHome` > $unpackedProduct/atlassian-jira/WEB-INF/classes/jira-application.properties")
             connection.execute("echo jira.autoexport=false > $jiraHome/jira-config.properties")
-            downloadMysqlConnector(
-                "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.40.tar.gz",
-                connection
-            )
-            connection.execute("tar -xzf mysql-connector-java-5.1.40.tar.gz")
-            connection.execute("cp mysql-connector-java-5.1.40/mysql-connector-java-5.1.40-bin.jar $unpackedProduct/lib")
+
+            if(DbType.MySql == dbType){
+                downloadMysqlConnector(
+                    "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.40.tar.gz",
+                    connection
+                )
+                connection.execute("tar -xzf mysql-connector-java-5.1.40.tar.gz")
+                connection.execute("cp mysql-connector-java-5.1.40/mysql-connector-java-5.1.40-bin.jar $unpackedProduct/lib")
+            }
             AwsCli().download(pluginsTransport.location, connection, target = "$jiraHome/plugins/installed-plugins")
 
             jdk.install(connection)
@@ -132,3 +137,4 @@ private class StaticBackoff(
 ) : Backoff {
     override fun backOff(attempt: Int): Duration = backOff
 }
+
