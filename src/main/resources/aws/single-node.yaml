@@ -39,7 +39,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 100
+            VolumeSize: 300
             VolumeType: gp2
   JIRA:
     Type: AWS::EC2::Instance
@@ -62,7 +62,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 200
+            VolumeSize: 300
             VolumeType: gp2
   SshSecurityGroup:
     Type: AWS::EC2::SecurityGroup
