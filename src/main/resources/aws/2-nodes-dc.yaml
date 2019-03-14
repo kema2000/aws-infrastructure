@@ -41,7 +41,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 100
+            VolumeSize: 200
             VolumeType: gp2
   jira2:
     Type: AWS::EC2::Instance
@@ -66,7 +66,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 100
+            VolumeSize: 200
             VolumeType: gp2
   SharedHome:
     Type: AWS::EC2::Instance
@@ -89,7 +89,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 100
+            VolumeSize: 200
             VolumeType: gp2
   Database:
     Type: AWS::EC2::Instance
@@ -112,7 +112,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 100
+            VolumeSize: 200
             VolumeType: gp2
   SshSecurityGroup:
     Type: AWS::EC2::SecurityGroup
