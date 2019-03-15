@@ -31,7 +31,9 @@ internal class StandaloneNodeFormula(
     private val ssh: Ssh,
     private val config: JiraNodeConfig,
     private val computer: Computer,
-    private val dbType: DbType = DbType.MySql
+    private val dbType: DbType = DbType.MySql,
+    private val adminUser: String = "admin",
+    private val adminPwd: String = "admin"
 ) : NodeFormula {
     private val logger: Logger = LogManager.getLogger(this::class.java)
     private val jdk = config.jdk
@@ -104,7 +106,9 @@ internal class StandaloneNodeFormula(
                     ssh = ssh,
                     launchTimeouts = config.launchTimeouts,
                     jdk = jdk,
-                    profiler = config.profiler
+                    profiler = config.profiler,
+                    adminUser = adminUser,
+                    adminPwd = adminPwd
                 )
             }
         } finally {
