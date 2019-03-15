@@ -48,7 +48,9 @@ class DataCenterFormula private constructor(
     private val computer: Computer,
     private val stackCreationTimeout: Duration,
     private val overriddenNetwork: Network? = null,
-    private val databaseComputer: Computer
+    private val databaseComputer: Computer,
+    private val adminUser : String = "admin",
+    private val adminPwd : String = "admin"
 ) : JiraFormula {
     private val logger: Logger = LogManager.getLogger(this::class.java)
 
@@ -206,7 +208,9 @@ class DataCenterFormula private constructor(
                             ssh = ssh,
                             config = configs[i],
                             computer = computer,
-                            dbType = database.getDbType()
+                            dbType = database.getDbType(),
+                            adminUser = adminUser,
+                            adminPwd = adminPwd
                         ),
                         nodeIndex = i,
                         sharedHome = sharedHome
@@ -293,6 +297,8 @@ class DataCenterFormula private constructor(
         private var stackCreationTimeout: Duration = Duration.ofMinutes(30)
         private var network: Network? = null
         private var databaseComputer: Computer = M4ExtraLargeElastic()
+        private var adminUser: String = "admin"
+        private var adminPwd: String = "admin"
 
         internal constructor(
             formula: DataCenterFormula
@@ -323,6 +329,9 @@ class DataCenterFormula private constructor(
 
         fun databaseComputer(databaseComputer: Computer): Builder = apply { this.databaseComputer = databaseComputer }
 
+        fun adminUser(adminUser: String): Builder = apply { this.adminUser = adminUser }
+        fun adminPwd(adminPwd: String): Builder = apply { this.adminPwd = adminPwd }
+
         internal fun network(network: Network) = apply { this.network = network }
 
         fun build(): DataCenterFormula = DataCenterFormula(
@@ -335,7 +344,9 @@ class DataCenterFormula private constructor(
             computer = computer,
             stackCreationTimeout = stackCreationTimeout,
             overriddenNetwork = network,
-            databaseComputer = databaseComputer
+            databaseComputer = databaseComputer,
+            adminUser = adminUser,
+            adminPwd = adminPwd
         )
     }
 }

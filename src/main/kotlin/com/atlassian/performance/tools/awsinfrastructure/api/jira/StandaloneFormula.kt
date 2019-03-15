@@ -39,7 +39,9 @@ class StandaloneFormula private constructor(
     private val computer: Computer,
     private val stackCreationTimeout: Duration,
     private val overriddenNetwork: Network? = null,
-    private val databaseComputer: Computer
+    private val databaseComputer: Computer,
+    private val adminUser : String = "admin",
+    private val adminPwd : String = "admin"
 ) : JiraFormula {
 
     @Suppress("DEPRECATION")
@@ -174,7 +176,9 @@ class StandaloneFormula private constructor(
             productDistribution = productDistribution,
             ssh = ssh,
             computer = computer,
-            dbType = database.getDbType()
+            dbType = database.getDbType(),
+            adminUser = adminUser,
+            adminPwd = adminPwd
         )
 
         uploadPlugins.get()
@@ -222,6 +226,8 @@ class StandaloneFormula private constructor(
         private var stackCreationTimeout: Duration = Duration.ofMinutes(30)
         private var network: Network? = null
         private var databaseComputer: Computer = M4ExtraLargeElastic()
+        private var adminUser: String = "admin"
+        private var adminPwd: String = "admin"
 
         internal constructor(
             formula: StandaloneFormula
@@ -244,6 +250,9 @@ class StandaloneFormula private constructor(
             apply { this.stackCreationTimeout = stackCreationTimeout }
         fun databaseComputer(databaseComputer: Computer): Builder = apply { this.databaseComputer = databaseComputer }
 
+        fun adminUser(adminUser: String): Builder = apply { this.adminUser = adminUser }
+        fun adminPwd(adminPwd: String): Builder = apply { this.adminPwd = adminPwd }
+
         internal fun network(network: Network) = apply { this.network = network }
 
         fun build(): StandaloneFormula = StandaloneFormula(
@@ -254,7 +263,9 @@ class StandaloneFormula private constructor(
             config = config,
             computer = computer,
             stackCreationTimeout = stackCreationTimeout,
-            databaseComputer = databaseComputer
+            databaseComputer = databaseComputer,
+            adminUser = adminUser,
+            adminPwd = adminPwd
         )
     }
 }

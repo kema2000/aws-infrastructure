@@ -28,7 +28,9 @@ internal data class StandaloneStoppedNode(
     private val launchTimeouts: JiraLaunchTimeouts,
     private val jdk: JavaDevelopmentKit,
     private val profiler: Profiler,
-    override val ssh: Ssh
+    override val ssh: Ssh,
+    private val adminUser : String = "admin",
+    private val adminPwd : String = "admin"
 ) : StoppedNode {
     private val logger: Logger = LogManager.getLogger(this::class.java)
 
@@ -96,7 +98,7 @@ internal data class StandaloneStoppedNode(
         ssh: SshConnection,
         threadDump: ThreadDump
     ) {
-        val upgradesEndpoint = URI("http://admin:admin@localhost:8080/rest/api/2/upgrade")
+        val upgradesEndpoint = URI("http://$adminUser:$adminPwd@localhost:8080/rest/api/2/upgrade")
         waitForStatusToChange(
             statusQuo = "000",
             timeout = launchTimeouts.offlineTimeout,
