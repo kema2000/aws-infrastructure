@@ -32,8 +32,8 @@ class Infrastructure<out T : VirtualUsers>(
                 VirtualUserOptions(
                     target = VirtualUserTarget(
                         webApplication = jira.address,
-                        userName = "admin",
-                        password = "admin"
+                        userName = behavior.adminUser,
+                        password = behavior.adminPassword
                     ),
                     behavior = behavior
                 )
