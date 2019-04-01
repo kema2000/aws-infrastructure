@@ -11,9 +11,6 @@ abstract class Computer internal constructor() {
 
     var volumeSize = 100
 
-    fun withVolumeSize(size : Int) : Computer {
-        volumeSize = size
-        return this
-    }
+    fun withVolumeSize(volumeSize : Int) = apply { this.volumeSize = volumeSize }
 
 }
