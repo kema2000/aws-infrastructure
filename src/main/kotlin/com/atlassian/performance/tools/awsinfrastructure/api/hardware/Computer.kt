@@ -8,4 +8,12 @@ abstract class Computer internal constructor() {
     internal abstract val instanceType: InstanceType
 
     internal abstract fun setUp(ssh: SshConnection)
+
+    var volumeSize = 100
+
+    fun withVolumeSize(size : Int) : Computer {
+        volumeSize = size
+        return this
+    }
+
 }

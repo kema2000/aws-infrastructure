@@ -73,6 +73,7 @@ class MulticastVirtualUsersFormula private constructor(
                         .splunkForwarder(splunkForwarder)
                         .browser(browser)
                         .also { if (network != null) it.network(network) }
+                        .nodeOrder(nodeOrder)
                         .build()
                         .provision(
                             investment = investment.copy(reuseKey = { investment.reuseKey() + nodeOrder }),
