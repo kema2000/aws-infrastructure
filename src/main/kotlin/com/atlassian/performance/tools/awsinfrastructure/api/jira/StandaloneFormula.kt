@@ -120,8 +120,14 @@ class StandaloneFormula private constructor(
                         .withParameterKey("JiraInstanceType")
                         .withParameterValue(computer.instanceType.toString()),
                     Parameter()
+                        .withParameterKey("JiraVolumeSize")
+                        .withParameterValue(computer.volumeSize.toString()),
+                    Parameter()
                         .withParameterKey("DatabaseInstanceType")
                         .withParameterValue(databaseComputer.instanceType.toString()),
+                    Parameter()
+                        .withParameterKey("DatabaseVolumeSize")
+                        .withParameterValue(databaseComputer.volumeSize.toString()),
                     Parameter()
                         .withParameterKey("Vpc")
                         .withParameterValue(network.vpc.vpcId),

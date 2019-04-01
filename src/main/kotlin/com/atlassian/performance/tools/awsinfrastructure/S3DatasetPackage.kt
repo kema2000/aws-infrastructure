@@ -7,7 +7,7 @@ import com.atlassian.performance.tools.jvmtasks.api.TaskTimer.time
 import com.atlassian.performance.tools.ssh.api.SshConnection
 import java.time.Duration
 
-internal data class S3DatasetPackage(
+data class S3DatasetPackage(
     private val artifactName: String,
     private val location: StorageLocation,
     private val unpackedPath: String? = null,

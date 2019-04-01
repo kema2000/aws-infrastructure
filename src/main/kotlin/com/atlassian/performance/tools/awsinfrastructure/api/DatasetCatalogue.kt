@@ -2,6 +2,7 @@ package com.atlassian.performance.tools.awsinfrastructure.api
 
 import com.atlassian.performance.tools.aws.api.StorageLocation
 import com.atlassian.performance.tools.awsinfrastructure.S3DatasetPackage
+import com.atlassian.performance.tools.infrastructure.api.database.Database
 import com.atlassian.performance.tools.infrastructure.api.database.DbType
 import com.atlassian.performance.tools.infrastructure.api.database.MySqlDatabase
 import com.atlassian.performance.tools.infrastructure.api.database.PostgresDatabase
@@ -44,7 +45,7 @@ class DatasetCatalogue {
             label = "2M issues, format 8",
             database = MySqlDatabase(
                 HttpDatasetPackage(
-                    downloadPath = bucketUri.resolve("dataset-631c70d4git -084b-455c-9785-b01068b9f07c/database.tar.bz2").toString(),
+                    downloadPath = bucketUri.resolve("dataset-631c70d4-084b-455c-9785-b01068b9f07c/database.tar.bz2").toString(),
                     downloadTimeout = ofMinutes(17)
                 )
             ),
@@ -107,4 +108,26 @@ class DatasetCatalogue {
             else -> throw Exception("DB $dbType not supported")
         }
     }
+
+    fun custom(
+        location: StorageLocation,
+        label: String = "custom",
+        jiraHomeDownload: Duration = ofMinutes(10),
+        databse: Database
+    ): Dataset {
+        val archiver = FileArchiver()
+        return Dataset(
+            label = label,
+            database = databse,
+            jiraHomeSource = JiraHomePackage(
+                S3DatasetPackage(
+                    artifactName = archiver.zippedName(CustomDatasetSource.FileNames.JIRAHOME),
+                    location = location,
+                    unpackedPath = CustomDatasetSource.FileNames.JIRAHOME,
+                    downloadTimeout = jiraHomeDownload
+                )
+            )
+        )
+    }
+
 }
