@@ -93,7 +93,7 @@ Resources:
         -
           DeviceName: /dev/sda1
           Ebs:
-            VolumeSize: 200
+            VolumeSize: !Ref JiraVolumeSize
             VolumeType: gp2
   Database:
     Type: AWS::EC2::Instance
